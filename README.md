@@ -100,23 +100,23 @@ Below is the step-by-step working procedure of the application:
 
 ### 1. Document Ingestion and Embedding/Indexing Process
 The system reads `sample_document.md`, extracts the text, splits it into chunks, and generates embeddings which are stored in the local ChromaDB vector database.
-![Document Ingestion & Indexing](screenshots/1_ingestion_and_embedding.png)
+> **[PLACE DOCUMENT INGESTION SCREENSHOT HERE]**
 
 ### 2. User Query
 The application waits for the user to input a question.
-![User Query](screenshots/2_user_query.png)
+> **[PLACE USER QUERY SCREENSHOT HERE]**
 
 ### 3. Vector Database Search
 The user's query is converted into an embedding, and the system performs a similarity search against the vector database to find the most relevant context.
-![Vector Database Search](screenshots/3_vector_search.png)
+> **[PLACE VECTOR DATABASE SEARCH SCREENSHOT HERE]**
 
 ### 4. Final Generated Answer
 The retrieved context and the user query are passed to the Gemini LLM, which generates a final, accurate response based solely on the document.
-![Final Generated Answer](screenshots/4_generated_answer.png)
+> **[PLACE FINAL GENERATED ANSWER SCREENSHOT HERE]**
 
 ### 5. Retrieved Context
 Along with the answer, the application prints out the exact chunks of text it retrieved from the vector database to prove where it got its information.
-![Retrieved Context](screenshots/5_retrieved_context.png)
+> **[PLACE RETRIEVED CONTEXT SCREENSHOT HERE]**
 
 ---
 
