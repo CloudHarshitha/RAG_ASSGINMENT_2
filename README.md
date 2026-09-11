@@ -114,7 +114,9 @@ The user's query is converted into an embedding, and the system performs a simil
 The retrieved context and the user query are passed to the Gemini LLM, which generates a final, accurate response based solely on the document.
 ![Final Generated Answer](screenshots/4_generated_answer.png)
 
-*(Note: The 5th screenshot for "Retrieved Context" will be added shortly!)*
+### 5. Retrieved Context
+Along with the answer, the application prints out the exact chunks of text it retrieved from the vector database to prove where it got its information.
+![Retrieved Context](screenshots/5_retrieved_context.png)
 
 ---
 
