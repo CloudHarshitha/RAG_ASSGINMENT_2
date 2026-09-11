@@ -1,0 +1,27 @@
+# Environment variables (contains API keys - NEVER commit this)
+.env
+
+# Vector database storage
+chroma_db/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Test files
+test_*.py
