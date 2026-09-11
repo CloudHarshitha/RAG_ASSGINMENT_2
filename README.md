@@ -1,78 +1,124 @@
 # RAG-Based Document Q&A System
 
-## 1. Project Overview
-This project is a Retrieval-Augmented Generation (RAG) application that allows users to upload documents (PDF, TXT, MD) and ask natural language questions about their content. Instead of relying solely on an LLM's pre-trained knowledge, the system searches the uploaded document for relevant information and uses it to construct a highly accurate and context-specific answer. 
+## What does this project do?
 
-If the answer isn't in the document, the system will explicitly state that the information is not available, preventing hallucinations.
+Ever wished you could just *ask* a document a question and get a straight answer? That's exactly what this project does.
 
-## 2. Architecture / Workflow
-The application follows a standard RAG pipeline:
+Instead of reading through an entire PDF or policy document to find one specific detail, you simply feed the document into this system and ask your question in plain English. The system searches through the document, finds the most relevant sections, and uses Google's Gemini AI to give you a clear, accurate answer — grounded entirely in the document's content.
 
-1. **Ingest (Document Processing):** The system loads the specified document (PDF, TXT, DOCX, MD) using LangChain loaders (`PyPDFLoader`, `TextLoader`, `Docx2txtLoader`).
-2. **Chunk (Text Chunking):** The extracted text is split into smaller, manageable chunks using a `RecursiveCharacterTextSplitter`.
-3. **Embed (Embeddings):** Each text chunk is converted into a high-dimensional vector representation (embedding) using a local HuggingFace embedding model (`all-MiniLM-L6-v2`).
-4. **Index (Vector Database):** The embeddings and their corresponding text chunks are stored locally in **ChromaDB**.
-5. **Retrieve (Similarity Search):** When a user asks a question, the query is embedded using the same model. A vector similarity search is performed against ChromaDB to find the top K most relevant text chunks.
-6. **Generate (LLM):** The retrieved context chunks and the user's original question are passed to **Google Gemini (gemini-1.5-pro)** via a strict prompt template to generate the final answer.
+If the answer isn't in the document, it'll tell you that honestly instead of making something up.
 
-## 3. Technologies Used
-* **Orchestration:** LangChain
-* **Embeddings:** HuggingFace (`sentence-transformers`, `all-MiniLM-L6-v2`)
-* **Vector Database:** ChromaDB
-* **LLM:** Google Gemini API (`gemini-1.5-pro`)
-* **Document Loaders:** `PyPDF2`, `docx2txt`, LangChain Community Loaders
+---
 
-## 4. Setup Instructions
-1. Ensure you have **Python 3.8+** installed.
-2. Clone this repository or open the project folder.
-3. Open a terminal and create a virtual environment (optional but recommended):
+## How it works (the RAG pipeline)
+
+Here's the step-by-step flow of what happens behind the scenes:
+
+```
+Document → Text Extraction → Chunking → Embeddings → Vector Database → Similarity Search → Retrieved Context → LLM → Answer
+```
+
+1. **Load the document** — You provide a file (PDF, TXT, DOCX, or Markdown), and the system reads all the text from it.
+2. **Split into chunks** — The full text gets broken down into smaller, overlapping pieces so the system can search through them efficiently.
+3. **Create embeddings** — Each chunk is converted into a numerical representation (a vector) that captures its meaning. This is done locally using a HuggingFace model, so no API calls are needed for this step.
+4. **Store in a vector database** — All the chunk embeddings are saved into ChromaDB, a local vector database that lives right in your project folder.
+5. **Search for relevant context** — When you ask a question, your question is also turned into an embedding. The system then finds the chunks whose meaning is closest to your question.
+6. **Generate the answer** — The most relevant chunks are sent to Google Gemini along with your question, and the model crafts a response using *only* the information from those chunks.
+
+---
+
+## Tech stack
+
+| Component | What I used |
+|---|---|
+| Language | Python |
+| Orchestration | LangChain |
+| Embeddings | HuggingFace (`all-MiniLM-L6-v2`) — runs locally, no API needed |
+| Vector Database | ChromaDB (stored locally in `./chroma_db/`) |
+| LLM | Google Gemini API (`gemini-3.5-flash`) |
+| Document Loaders | PyPDF2, LangChain Community Loaders |
+
+---
+
+## How to set it up
+
+### Prerequisites
+- Python 3.8 or higher
+- A Google Gemini API key (free from [Google AI Studio](https://aistudio.google.com/))
+
+### Steps
+
+1. **Clone this repo**
    ```bash
-   python -m venv venv
-   # Windows
-   venv\Scripts\activate
-   # Mac/Linux
-   source venv/bin/activate
+   git clone https://github.com/CloudHarshitha/RAG_ASSGINMENT_2.git
+   cd RAG_ASSGINMENT_2
    ```
-4. Install the required dependencies:
+
+2. **Install dependencies**
    ```bash
    python -m pip install -r requirements.txt
    ```
-5. Obtain a Google Gemini API Key from [Google AI Studio](https://aistudio.google.com/).
-6. Rename `.env.example` to `.env` and paste your API key inside:
-   ```env
-   GOOGLE_API_KEY=your_actual_api_key_here
+
+3. **Set up your API key**
+   - Copy `.env.example` to `.env`
+   - Open `.env` and paste your Google Gemini API key:
+     ```
+     GOOGLE_API_KEY=your_actual_key_here
+     MODEL_NAME=gemini-3.5-flash
+     ```
+
+4. **Run it!**
+   ```bash
+   python main.py
    ```
 
-## 5. How to run the application
-Run the following command in your terminal from the project root:
-```bash
-python main.py
-```
-This will start the command-line interface where the document is ingested and you can chat with it.
+That's it. The system will load the sample document, index it, and drop you into an interactive Q&A session.
 
-## 6. Sample Document Used for Testing
-A sample document named `sample_document.md` is included in the repository. It contains a fictional "Acme Corp - Remote Work and Equipment Policy". 
-You can upload this file via the sidebar to test questions like:
-* *"What is the work from home policy?"*
-* *"How much is the home office stipend?"*
+---
 
-## 7. RAG Concepts Explanation
+## Sample questions you can try
+
+A sample document (`sample_document.md`) is included — it's a fictional "Acme Corp Remote Work & Equipment Policy." Try asking:
+
+- *"What is the work from home policy?"*
+- *"Which VPN should employees connect when working from home?"*
+- *"How much is the home office stipend?"*
+- *"What equipment does the company provide?"*
+
+---
+
+## Understanding the RAG concepts
 
 ### What are embeddings?
-Embeddings are numerical representations (vectors) of text. They capture the semantic meaning and context of words, sentences, or paragraphs in a high-dimensional mathematical space. This allows computers to understand relationships between text concepts (e.g., understanding that "dog" and "puppy" are closer in meaning than "dog" and "car").
+Think of embeddings as a way to translate words into numbers that capture their *meaning*. The word "puppy" and "dog" would get similar numbers because they mean similar things, while "puppy" and "car" would be far apart. This is how the system understands which chunks of text are relevant to your question — it's not just matching keywords, it's matching meaning.
 
-### Why is a vector database required?
-Standard relational databases search for exact keyword matches. A vector database is designed specifically to store and query high-dimensional embeddings efficiently. It allows us to perform "similarity searches," finding text chunks that are *semantically related* to a user's question, even if they don't share the exact same keywords.
+### Why do we need a vector database?
+A normal database searches for exact keyword matches. But when you ask "What's the WFH policy?", you want it to also find text that says "remote work eligibility" — even though the words are completely different. A vector database like ChromaDB stores these meaning-based embeddings and can quickly find the most semantically similar chunks to your question.
 
-### How similarity search works
-When a user asks a question, the query is converted into an embedding (a vector). The vector database then calculates the mathematical distance (e.g., Cosine Similarity or Euclidean distance) between the query vector and all the chunk vectors stored in the database. The chunks with vectors that are closest to the query vector are returned as the most "similar" or relevant context.
+### How does similarity search work?
+When you type a question, it gets converted into an embedding (a list of numbers). The database then calculates the mathematical distance between your question's embedding and every stored chunk's embedding. The chunks with the smallest distance (i.e., most similar meaning) are returned as the relevant context.
 
-### What chunk size and overlap were selected?
-* **Chunk Size:** 1000 characters
-* **Chunk Overlap:** 200 characters
+### Why chunk size = 1000 and overlap = 200?
+- **Chunk size of 1000 characters** gives each chunk enough surrounding context for the LLM to understand the information properly, without being so large that it dilutes the specific detail.
+- **Overlap of 200 characters** ensures that if an important sentence falls right at the boundary between two chunks, it won't get cut in half — both chunks will contain it.
 
-**Explanation:** A chunk size of 1000 provides enough context for the LLM to understand the surrounding information without exceeding token limits or diluting the specific meaning. The 200-character overlap ensures that sentences or concepts aren't abruptly cut in half across two different chunks, preserving the continuity of the information.
+### How is RAG different from just asking an LLM directly?
+When you ask ChatGPT or Gemini a question directly, it answers from its training data — which might be outdated, incomplete, or simply wrong for your specific use case. It has no idea what's in *your* company's policy document.
 
-### How RAG differs from simply asking an LLM a question
-When you simply ask an LLM a question, it generates an answer based purely on the static data it was trained on months or years ago. It might hallucinate (make things up) or lack knowledge of private/recent documents. 
-**RAG (Retrieval-Augmented Generation)** intercepts the process by first *retrieving* relevant factual information from your specific documents, and then explicitly instructing the LLM to use *only* that retrieved context to formulate its answer. This grounds the LLM in truth and allows it to answer questions about proprietary or unseen data.
+RAG fixes this by first *retrieving* the actual relevant text from your document, and then telling the LLM: "Here's the context — answer based on THIS, not your general knowledge." This keeps the answers factual and grounded in reality.
+
+---
+
+## Project structure
+
+```
+RAG_ASSGINMENT_2/
+├── main.py              # CLI application entry point
+├── rag_pipeline.py      # Core RAG logic (loading, chunking, embedding, retrieval, generation)
+├── sample_document.md   # Sample document for testing
+├── requirements.txt     # Python dependencies
+├── .env.example         # Template for environment variables
+├── .env                 # Your actual API keys (not committed to git)
+├── .gitignore           # Keeps sensitive files out of the repo
+└── chroma_db/           # Auto-generated vector database (not committed)
+```
