@@ -100,23 +100,31 @@ Below is the step-by-step working procedure of the application:
 
 ### 1. Document Ingestion and Embedding/Indexing Process
 The system reads `sample_document.md`, extracts the text, splits it into chunks, and generates embeddings which are stored in the local ChromaDB vector database.
-> **[PLACE DOCUMENT INGESTION SCREENSHOT HERE]**
+> <img width="564" height="183" alt="Screenshot 2026-09-11 210011" src="https://github.com/user-attachments/assets/aab52d1a-af04-48c7-bc02-79a86b8a8f97" />
+<img width="695" height="109" alt="Screenshot 2026-09-11 210442" src="https://github.com/user-attachments/assets/14e6fa70-a1cb-40da-8330-3e56e372ae37" />
+
+
 
 ### 2. User Query
 The application waits for the user to input a question.
-> **[PLACE USER QUERY SCREENSHOT HERE]**
+> <img width="638" height="160" alt="Screenshot 2026-09-11 210514" src="https://github.com/user-attachments/assets/a50487ff-fa11-4503-942c-27f33baaedcd" />
+
 
 ### 3. Vector Database Search
 The user's query is converted into an embedding, and the system performs a similarity search against the vector database to find the most relevant context.
-> **[PLACE VECTOR DATABASE SEARCH SCREENSHOT HERE]**
+><img width="590" height="35" alt="Screenshot 2026-09-11 210547" src="https://github.com/user-attachments/assets/a9722b4f-d3b2-4ef6-b921-03badc971099" />
 
 ### 4. Final Generated Answer
 The retrieved context and the user query are passed to the Gemini LLM, which generates a final, accurate response based solely on the document.
-> **[PLACE FINAL GENERATED ANSWER SCREENSHOT HERE]**
+> <img width="638" height="86" alt="Screenshot 2026-09-11 210613" src="https://github.com/user-attachments/assets/fa75a433-7e8a-485a-a43c-e451572e2286" />
+
 
 ### 5. Retrieved Context
 Along with the answer, the application prints out the exact chunks of text it retrieved from the vector database to prove where it got its information.
-> **[PLACE RETRIEVED CONTEXT SCREENSHOT HERE]**
+> <img width="629" height="434" alt="Screenshot 2026-09-11 210706" src="https://github.com/user-attachments/assets/b3f6299f-8c52-4dfc-b1ef-24bdebf9124d" />
+<img width="643" height="452" alt="Screenshot 2026-09-11 210724" src="https://github.com/user-attachments/assets/e2c5123e-509a-4d8a-882d-2e20dc1a0635" />
+<img width="623" height="449" alt="Screenshot 2026-09-11 210738" src="https://github.com/user-attachments/assets/2ae4a418-54eb-4b30-a290-c5229ee260eb" />
+
 
 ---
 
