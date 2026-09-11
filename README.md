@@ -94,6 +94,30 @@ If you ask something that's not in the document (like "What is the company's sto
 
 ---
 
+## Application Workflow and Screenshots
+
+Below is the step-by-step working procedure of the application:
+
+### 1. Document Ingestion and Embedding/Indexing Process
+The system reads `sample_document.md`, extracts the text, splits it into chunks, and generates embeddings which are stored in the local ChromaDB vector database.
+![Document Ingestion & Indexing](screenshots/1_ingestion_and_embedding.png)
+
+### 2. User Query
+The application waits for the user to input a question.
+![User Query](screenshots/2_user_query.png)
+
+### 3. Vector Database Search
+The user's query is converted into an embedding, and the system performs a similarity search against the vector database to find the most relevant context.
+![Vector Database Search](screenshots/3_vector_search.png)
+
+### 4. Final Generated Answer
+The retrieved context and the user query are passed to the Gemini LLM, which generates a final, accurate response based solely on the document.
+![Final Generated Answer](screenshots/4_generated_answer.png)
+
+*(Note: The 5th screenshot for "Retrieved Context" will be added shortly!)*
+
+---
+
 ## Explanation of Key RAG Concepts
 
 ### 1. What are embeddings?
