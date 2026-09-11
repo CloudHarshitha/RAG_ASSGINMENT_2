@@ -98,27 +98,31 @@ If you ask something that's not in the document (like "What is the company's sto
 
 ### 1. What are embeddings?
 
-Embeddings are basically a way of converting text into numbers so that a computer can understand meaning. When we turn a sentence into an embedding, we get a list of numbers (a vector) that represents what that sentence is about. Sentences with similar meanings end up with similar vectors. For example, "remote work policy" and "work from home guidelines" would have very close embeddings even though the actual words are different.
-
-I used the `all-MiniLM-L6-v2` model from HuggingFace for generating these embeddings. It runs entirely on your local machine, so there's no API cost involved and it's quite fast.
+* Think of embeddings as translating human words into computer math. 
+* We turn a sentence into a list of numbers (a vector) that captures its actual *meaning*.
+* **Example:** If one sentence says "stipend of $500" and another says "office equipment allowance", the computer knows they mean the same thing because their number lists (vectors) are very similar!
 
 ### 2. Why do we need a vector database?
 
-A regular database can only search for exact keyword matches. But when someone asks "Can I work from home?", we want the system to also find text that talks about "remote work eligibility" — even though the words are completely different. A vector database like ChromaDB stores the embeddings and lets us search by meaning rather than by exact words. This is what makes the whole retrieval step work.
+* Normal databases are dumb — they only find exact word matches.
+* A vector database (like ChromaDB) stores our meaning-based number lists.
+* **Example:** If you ask "Do I get money for my desk?", a normal database won't find the answer because the document says "stipend of $500 for home office setup". The vector database understands the meaning and finds it perfectly!
 
 ### 3. How does similarity search work?
 
-When you type a question, the system converts your question into an embedding vector. Then ChromaDB calculates the mathematical distance (using cosine similarity) between your question vector and all the stored chunk vectors. The chunks with the smallest distance — meaning the closest semantic match — are returned as the most relevant context. In this project, I retrieve the top 4 most relevant chunks.
+* When you ask a question, we turn it into a number list too.
+* We then ask the database: "Which document chunks have numbers mathematically closest to my question's numbers?"
+* **Example:** Your question about "company VPN" is mathematically compared to the entire document. The database calculates the distance and pulls out the specific section about the "Acme Corp VPN" and "Security Protocols" because they are the closest match.
 
 ### 4. Why did you choose your chunk size and overlap?
 
-I chose a chunk size of 1000 characters and an overlap of 200 characters. A chunk size of 1000 is large enough to preserve meaningful context within each chunk, but small enough that the retrieval stays focused and doesn't pull in too much irrelevant information. The 200-character overlap is there to make sure that if an important sentence happens to fall right at the boundary between two chunks, it doesn't get cut in half — both neighboring chunks will contain it.
+* **Chunk Size (1000):** Not too big, not too small. It's just enough text for the LLM to get full context (like the entire "Home Office Equipment Setup" section) without being overwhelmed by unrelated stuff.
+* **Overlap (200):** Think of this as a safety net. If a sentence about the "$50 per month internet bill" falls right on the edge of a chunk, the overlap ensures the whole sentence makes it into the next chunk so nothing gets chopped in half.
 
 ### 5. How is RAG different from simply asking an LLM?
 
-When you ask a regular LLM a question directly, it answers purely from whatever it learned during training. It has no idea what's in your specific document, and it might confidently give you wrong information (hallucinate).
-
-RAG solves this by adding a retrieval step before generation. 
+* **Regular LLMs** just guess answers from memory. If you ask ChatGPT about "Acme Corp's VPN", it will hallucinate because it hasn't seen our private document.
+* **RAG** gives the LLM an open-book test. We search the document *first*, hand the LLM the right paragraph, and say "Read this and answer the question."
 
 **Normal LLM:**
 `Question → LLM → Answer`
@@ -136,7 +140,7 @@ LLM
 Answer
 ```
 
-This keeps the answers grounded in actual facts from the document.
+This keeps the answers 100% grounded in actual facts from our document!
 
 ---
 
