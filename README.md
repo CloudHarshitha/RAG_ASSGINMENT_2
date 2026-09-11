@@ -10,7 +10,7 @@ The whole application runs from the command line — no web interface needed. Ju
 
 ---
 
-## Architecture and Workflow
+## Architecture/Workflow
 
 The application follows a standard RAG pipeline. Here's the flow:
 
@@ -69,6 +69,8 @@ GOOGLE_API_KEY=paste_your_actual_key_here
 MODEL_NAME=gemini-3.5-flash
 ```
 
+## How to run the application
+
 **Step 6:** Run the application:
 ```bash
 python main.py
@@ -78,7 +80,7 @@ The system will load the sample document, process it, and then you can start ask
 
 ---
 
-## Sample Document and Testing
+## Sample document used for testing
 
 I've included a sample document called `sample_document.md` in the repository. It contains a fictional "Acme Corp — Remote Work and Equipment Policy" that covers topics like remote work eligibility, home office stipends, equipment provided, VPN requirements, and communication expectations.
 
